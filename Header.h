@@ -23,7 +23,7 @@ private:
         {
 
         }
-        list_node(u data1) :data{ data1 }, next{ nullptr }
+        list_node(const u& data1) :data{ data1 }, next{ nullptr }
         {
 
         }
@@ -34,12 +34,20 @@ private:
     list_node* head;
     list_node* ptr;
 public:
+    //write and iterator (on process)
+    using iterator = list_node *;
+    using const_iterator = list_node*;
+    using const_reverse_iterator = list_node*;  
+    using reverse_iterator = list_node*;
+   
     //constructors
-    single_linked_list() :head{ nullptr }, ptr{ nullptr }, size1{ 0 }
+    single_linked_list() noexcept
     {
-
+        head = nullptr;
+        ptr = nullptr;
+        size1 = 0;
     }
-    single_linked_list(const single_linked_list& a) {
+    single_linked_list(const single_linked_list& a)   {
 
         if (this != &a) {
 
@@ -63,31 +71,35 @@ public:
 
     }
    //iterator when??
-      //functions of the class
-    template <typename x> void push_back(x data1) {
+   //functions of the class
+    template <typename x> void push_back(const x &data1) noexcept  {
         if (size1 == 0) {
             size1++;
-            head = new list_node(data1);
+            head = new(std::nothrow) list_node(data1);
+            if (head== nullptr)exit(1);
             ptr = head;
+
 
         }
         else {
             size1++;
-            ptr->next = new list_node(data1);
+            ptr->next = new(std::nothrow) list_node(data1);
+            if (ptr->next == nullptr)exit(1);
             ptr = ptr->next;
         }
         return;
     }
-    void show() {
+    void show()const noexcept {
         list_node* ptr1 = head;
         for (size_t i = 0; i < size1; i++) {
             cout << ptr1->data << '\n';
             ptr1 = ptr1->next;
         }
+       
         return;
     }
-    void pop_back() {
-        if (size1 != 1) {
+    void pop_back()noexcept {
+        if (size1 > 1) {
             delete ptr;
             size1--;
             ptr = head;
@@ -97,21 +109,22 @@ public:
             return;
 
         }
-        else {
+        else if(size1==1){
             size1 = 0;
             ptr = nullptr;
             delete head;
             head = nullptr;
         }
+       
         return;
 
     }
-    bool empty() {
+    bool empty()const noexcept {
         if (head == nullptr)return true;
         else return false;
     }
 
-    void sort() {
+    void sort()const noexcept {
 
         if (size1 != 0) {
             for (size_t i = 0; i < size1 - 1; i++) {
@@ -133,14 +146,20 @@ public:
         }
         return;
     }
-
-    size_t size() {
+    
+    list_node* begin()const noexcept {
+        return head;
+    }
+    list_node* end() const noexcept{
+        return (nullptr);
+    }
+    size_t size() const noexcept{
         return size1;
     }
-    void clear() {
+    void clear() const noexcept {
         this->~single_linked_list();
     }
-    void reverse() {
+    void reverse()const  noexcept  {
         vector<u>k;
         list_node* ptr1 = head;
         for (size_t i = 0; i < size1; i++) {
@@ -155,9 +174,11 @@ public:
         }
         return;
     }
+    //iterators
+   
     //overloaded operators
 
-    void operator =(const single_linked_list& a) {
+    void operator =(const single_linked_list& a) noexcept {
 
         if (this != &a) {
             if (this->head != nullptr) {
@@ -188,6 +209,11 @@ public:
         }
         return;
     }
+   
+    
+   
+
+
     //destructor
     ~single_linked_list() {
         list_node* ptr1 = head;
@@ -197,15 +223,14 @@ public:
             delete ptr1;
             ptr1 = ptr2;
           
-
+            
         }
         size1 = 0;
         head = nullptr;
         ptr = nullptr;
+        return;
 
     }
 
 
 };
-
-
